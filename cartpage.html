@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart</title>
+    <style>
+        /* General body styling */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        /* Cart container styling */
+        #cart {
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            margin: 20px;
+        }
+
+        /* Cart items styling */
+        #cart-items {
+            margin-bottom: 20px;
+        }
+
+        #cart-items p {
+            margin: 0;
+        }
+
+        /* Cart total styling */
+        #cart-total {
+            font-weight: bold;
+        }
+
+        /* Button styling */
+        .btn {
+            background-color: #333;
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin: 5px;
+            font-size: 16px;
+        }
+
+        .btn:hover {
+            background-color: #555;
+        }
+
+        .btn.clear {
+            background-color: #e74c3c;
+        }
+
+        .btn.clear:hover {
+            background-color: #c0392b;
+        }
+
+        /* Payment container styling */
+        .payment-container {
+            display: none; /* Initially hidden */
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            margin: 20px;
+        }
+
+        .payment-container h2 {
+            margin-top: 0;
+        }
+
+        .payment-container form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .payment-container input {
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .payment-container button {
+            background-color: #333;
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .payment-container button:hover {
+            background-color: #555;
+        }
+    </style>
+</head>
+<body>
+    <section id="cart">
+        <h1>Your Cart</h1>
+        <div id="cart-items">
+            <p>Your cart is empty.</p>
+        </div>
+        <p id="cart-total">Total: $0.00</p>
+        <button class="btn" onclick="clearCart()">Clear All</button>
+        <button class="btn" onclick="showPayment()">Order Now</button>
+        <a href="home.html" class="btn">Back to Shopping</a>
+        <a href="additional.html" class="btn">Track Order</a>
+    </section>
+
+    <div class="payment-container" id="payment-container">
+        <h2>Payment Details</h2>
+        <form id="payment-form" onsubmit="submitOrder(event)">
+            <input type="text" id="card-name" name="card-name" placeholder="Cardholder Name" required>
+            <input type="text" id="card-number" name="card-number" placeholder="Card Number" required>
+            <input type="text" id="card-expiry" name="card-expiry" placeholder="Expiry Date (MM/YY)" required>
+            <input type="text" id="card-cvc" name="card-cvc" placeholder="CVC" required>
+            <button type="submit">Pay Now</button>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const cartItemsContainer = document.getElementById('cart-items');
+            const cartTotal = document.getElementById('cart-total');
+            const paymentContainer = document.getElementById('payment-container');
+
+            function updateCartDisplay() {
+                let cart = JSON.parse(localStorage.getItem('cart')) || [];
+                if (cart.length === 0) {
+                    cartItemsContainer.innerHTML = '<p>Your cart is empty</p>';
+                    cartTotal.textContent = 'Total: $0.00';
+                } else {
+                    cartItemsContainer.innerHTML = '';
+                    let total = 0;
+                    cart.forEach(item => {
+                        const itemElement = document.createElement('div');
+                        itemElement.textContent = `${item.name} - $${item.price}`;
+                        cartItemsContainer.appendChild(itemElement);
+                        total += parseFloat(item.price);
+                    });
+                    cartTotal.textContent = `Total: $${total.toFixed(2)}`;
+                }
+            }
+
+            window.clearCart = function () {
+                localStorage.removeItem('cart');
+                updateCartDisplay();
+            }
+
+            window.showPayment = function () {
+                paymentContainer.style.display = 'block';
+            }
+
+            window.submitOrder = function (event) {
+                event.preventDefault();
+                // Save order details in localStorage
+                const order = {
+                    date: new Date().toLocaleString(),
+                    items: JSON.parse(localStorage.getItem('cart')) || [],
+                    total: cartTotal.textContent.replace('Total: $', '')
+                };
+                localStorage.setItem('order', JSON.stringify(order));
+                alert('Order placed successfully!');
+                // Redirect to order tracker page
+                window.location.href = 'additional.html';
+            }
+
+            updateCartDisplay();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Tracker</title>
+    <style>
+        /* General body styling */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        /* Container styling */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Order tracker section styling */
+        #order-tracker {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        #order-tracker h1 {
+            margin-top: 0;
+            color: #444;
+        }
+
+        .order-details {
+            margin-bottom: 20px;
+        }
+
+        .order-details p {
+            margin: 8px 0;
+        }
+
+        /* Button styling */
+        .btn {
+            background-color: #333;
+            color: #ffffff;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        .btn:hover {
+            background-color: #555;
+        }
+
+        /* Responsive styling */
+        @media (max-width: 600px) {
+            .btn {
+                display: block;
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <section id="order-tracker">
+            <h1>Order Tracker</h1>
+            <div id="order-details" class="order-details">
+                <p>No order placed yet.</p>
+            </div>
+            <a href="cartpage.html" class="btn">Back to Cart</a>
+        </section>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const orderDetailsContainer = document.getElementById('order-details');
+            const order = JSON.parse(localStorage.getItem('order'));
+
+            if (order) {
+                const orderDate = document.createElement('p');
+                orderDate.textContent = `Order Date: ${order.date}`;
+
+                const orderItems = document.createElement('div');
+                orderItems.innerHTML = '<p>Items:</p>';
+                order.items.forEach(item => {
+                    const itemElement = document.createElement('div');
+                    itemElement.textContent = `${item.name} - $${item.price}`;
+                    orderItems.appendChild(itemElement);
+                });
+
+                const orderTotal = document.createElement('p');
+                orderTotal.textContent = `Total: $${order.total}`;
+
+                orderDetailsContainer.innerHTML = '';
+                orderDetailsContainer.appendChild(orderDate);
+                orderDetailsContainer.appendChild(orderItems);
+                orderDetailsContainer.appendChild(orderTotal);
+            } else {
+                orderDetailsContainer.innerHTML = '<p>No order placed yet.</p>';
+            }
+        });
+    </script>
+</body>
+</html>
